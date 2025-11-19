@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growana/screens/login_page.dart';
 import 'screens/home_page.dart';
 
 void main() {
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const HomePage(),
+      routes: {'/login': (context) => const LoginPage()},
     );
   }
 }

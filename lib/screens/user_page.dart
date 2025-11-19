@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/user_service.dart';
 import 'home_page.dart';
 import '../widgets/bottom_navbar.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import '../widgets/growana_appbar.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({super.key});
@@ -12,19 +12,7 @@ class UserPage extends StatelessWidget {
     final user = UserService.currentUser;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1D7140),
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SvgPicture.asset('assets/icons/icon.svg'),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart, color: Colors.white),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      appBar: GrowanaAppBar(showBack: true),
       body:
           user == null
               ? const Center(child: Text('Tidak ada user yang login'))
