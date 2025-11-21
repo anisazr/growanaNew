@@ -6,8 +6,6 @@ import 'login_page.dart';
 import '../services/user_service.dart';
 import '../widgets/bottom_navbar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import '../widgets/my_classes.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,6 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+  int _carouselIndex = 0;
   final user = UserService.currentUser;
   final List<String> _carouselImages = [
     'assets/images/1.jpg',
@@ -54,151 +53,386 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Widget _buildCategoryItem(IconData icon, String label) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white30,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.white60, width: 2),
+          ),
+          child: Icon(icon, color: Colors.white, size: 32),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GrowanaAppBar(showUser: true),
+      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: GrowanaAppBar(showLocation: true),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Section dengan background hijau
+            // Header Section dengan gradient modern
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color(0xFF1D7140),
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [const Color(0xFF1D7140), const Color(0xFF2A9D5F)],
+                ),
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(20),
+                  bottomRight: Radius.circular(30),
                 ),
               ),
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
               child: Column(
                 children: [
-                  // Search Bar
-                  // TextField(
-                  //   decoration: InputDecoration(
-                  //     hintText: 'Cari Produk yang Tersedia',
-                  //     prefixIcon: const Icon(Icons.search),
-                  //     filled: true,
-                  //     fillColor: Colors.white,
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(8.0),
-                  //       borderSide: BorderSide.none,
-                  //     ),
-                  //   ),
-                  // ),
+                  // Search Bar Modern
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Cari Produk yang Tersedia',
+                        hintStyle: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: 14,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: const Color(0xFF1D7140),
+                          size: 22,
+                        ),
+                        suffixIcon: Icon(
+                          Icons.filter_list,
+                          color: Colors.grey[400],
+                          size: 22,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.all(16),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
 
                   // My Classes Widget
-                  const MyClassesWidget(),
+                  // const MyClassesWidget(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildCategoryItem(Icons.art_track, 'Pameran'),
+                      _buildCategoryItem(Icons.people, 'Komunitas'),
+                      _buildCategoryItem(Icons.fastfood, 'Healthy Food'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 32),
+
+            // Section Title dengan style Cinema 21
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Pameran',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1D7140),
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Koleksi Produk Unggulan',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
 
             const SizedBox(height: 24),
 
-            Center(
-              child: Text(
-                'Pameran',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
+            // Carousel dengan indicator dots
+            Column(
+              children: [
+                CarouselSlider(
+                  options: CarouselOptions(
+                    height: 420,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    autoPlayInterval: const Duration(seconds: 4),
+                    autoPlayCurve: Curves.easeInOutCubic,
+                    viewportFraction: 0.42,
+                    enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _carouselIndex = index;
+                      });
+                    },
+                  ),
+                  items:
+                      _carouselImages.map((imageUrl) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.2),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 6),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    Image.asset(imageUrl, fit: BoxFit.cover),
+                                    // Gradient overlay untuk efek sinematik
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.black.withValues(alpha: 0.3),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                ),
+
+                const SizedBox(height: 16),
+
+                // Carousel Indicator Dots
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:
+                      _carouselImages.asMap().entries.map((entry) {
+                        return Container(
+                          width: _carouselIndex == entry.key ? 24 : 8,
+                          height: 8,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color:
+                                _carouselIndex == entry.key
+                                    ? const Color(0xFF1D7140)
+                                    : Colors.grey[300],
+                          ),
+                        );
+                      }).toList(),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 32),
+
+            // Button "Lihat Semua" dengan style modern
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Navigate to all exhibitions
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1D7140),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 3,
+                    shadowColor: const Color(0xFF1D7140).withValues(alpha: 0.3),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        'Lihat Semua Pameran',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(Icons.arrow_forward, size: 20),
+                    ],
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 16),
 
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-                enlargeCenterPage: true,
-                autoPlayInterval: const Duration(seconds: 3),
-                viewportFraction: 0.35,
-              ),
-              items:
-                  _carouselImages.map((imageUrl) {
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return AspectRatio(
-                          aspectRatio: 9 / 16,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            // margin: const EdgeInsets.symmetric(horizontal: 2.0),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Image.asset(imageUrl, fit: BoxFit.cover),
-                            ),
+            const SizedBox(height: 40),
+
+            // Section "Sedang Trending" (opsional)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Sedang Trending',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1D7140),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          'Lihat Semua',
+                          style: TextStyle(
+                            color: Color(0xFF1D7140),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 180,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: 130,
+                          margin: const EdgeInsets.only(right: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.08),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(12),
+                                ),
+                                child: Container(
+                                  height: 120,
+                                  color: Colors.grey[300],
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.image,
+                                      size: 40,
+                                      color: Colors.grey[400],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Produk ${index + 1}',
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Rp 50.000',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       },
-                    );
-                  }).toList(),
+                    ),
+                  ),
+                ],
+              ),
             ),
 
-            const SizedBox(height: 16),
-
-            // Grid Produk Section
-            // Padding(
-            //   padding: const EdgeInsets.all(16.0),
-            //   child: GridView.builder(
-            //     shrinkWrap: true,
-            //     physics: const NeverScrollableScrollPhysics(),
-            //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            //       crossAxisCount: 3,
-            //       crossAxisSpacing: 12,
-            //       mainAxisSpacing: 12,
-            //       childAspectRatio: 0.85,
-            //     ),
-            //     itemCount: 6,
-            //     itemBuilder: (context, index) {
-            //       final products = [
-            //         // Ganti gambarnya, tapi nama file harus disamakan
-            //         {'name': 'Produk 1', 'image': 'assets/images/produk1.jpeg'},
-            //         {'name': 'Produk 2', 'image': 'assets/images/produk2.jpeg'},
-            //         {'name': 'Produk 3', 'image': 'assets/images/produk3.jpeg'},
-            //         {'name': 'Produk 4', 'image': 'assets/images/produk4.jpeg'},
-            //         {'name': 'Produk 5', 'image': 'assets/images/produk5.jpeg'},
-            //         {'name': 'Produk 6', 'image': 'assets/images/produk6.jpeg'},
-            //       ];
-
-            //       return Container(
-            //         decoration: BoxDecoration(
-            //           color: Colors.grey[200],
-            //           borderRadius: BorderRadius.circular(8.0),
-            //         ),
-            //         child: Column(
-            //           children: [
-            //             Expanded(
-            //               child: ClipRRect(
-            //                 borderRadius: const BorderRadius.vertical(
-            //                   top: Radius.circular(8),
-            //                 ),
-            //                 child: Image.asset(
-            //                   products[index]['image']!,
-            //                   fit: BoxFit.cover,
-            //                   width: double.infinity,
-            //                 ),
-            //               ),
-            //             ),
-            //             const SizedBox(height: 6),
-            //             Padding(
-            //               padding: const EdgeInsets.only(bottom: 8),
-            //               child: Text(
-            //                 products[index]['name']!,
-            //                 style: TextStyle(
-            //                   fontSize: 12,
-            //                   color: Colors.grey[800],
-            //                   fontWeight: FontWeight.w500,
-            //                 ),
-            //               ),
-            //             ),
-            //           ],
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ),
+            const SizedBox(height: 40),
           ],
         ),
       ),

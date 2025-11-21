@@ -15,13 +15,13 @@ class BottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      selectedItemColor: const Color(0xFF1D7140),
-      unselectedItemColor: Colors.grey,
+      selectedItemColor: const Color(0xFF1D7140), // Hijau untuk aktif
+      unselectedItemColor: Colors.grey, // Abu untuk tidak aktif
       type: BottomNavigationBarType.fixed,
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-        BottomNavigationBarItem(icon: Icon(Icons.class_), label: ''),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+        BottomNavigationBarItem(icon: Icon(Icons.class_), label: 'Kelas'),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
       ],
     );
   }
