@@ -1,122 +1,116 @@
 import 'package:flutter/material.dart';
+import 'package:growana/models/user.dart';
+import 'package:growana/screens/edit_profile_page.dart';
+import 'package:growana/services/auth_service.dart';
+import 'package:growana/repositories/user_repository.dart';
+import 'login_page.dart';
 import '../services/user_service.dart';
-import 'home_page.dart';
-import '../widgets/bottom_navbar.dart';
-import '../widgets/growana_appbar.dart';
 
-class UserPage extends StatelessWidget {
+class UserPage extends StatefulWidget {
   const UserPage({super.key});
 
   @override
+  State<UserPage> createState() => _UserPageState();
+}
+
+class _UserPageState extends State<UserPage> {
+  final auth = AuthService();
+  User? currentUser;
+  bool checking = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkUser();
+  }
+
+  Future<void> _checkUser() async {
+    currentUser = await auth.getLoggedInUser();
+    if (currentUser == null) {
+      // redirect ke LoginPage (Opsi 2)
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginPage()),
+      );
+      return;
+    }
+    // update also compatibility service
+    await UserService.refreshCurrentUser();
+    setState(() {
+      checking = false;
+    });
+  }
+
+  Future<void> deleteAccount() async {
+    final confirm = await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Hapus Akun"),
+        content: const Text("Apakah Anda yakin ingin menghapus akun ini?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("Batal"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text("Hapus", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await UserRepository().deleteUser(currentUser!.id!);
+      await auth.logout();
+      await UserService.refreshCurrentUser();
+
+      Navigator.pushNamedAndRemoveUntil(context, "/login", (_) => false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final user = UserService.currentUser;
+    if (checking) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return Scaffold(
-      appBar: GrowanaAppBar(showBack: true),
-      body:
-          user == null
-              ? const Center(child: Text('Tidak ada user yang login'))
-              : Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(20.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            user.name,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.email,
-                                size: 16,
-                                color: Colors.grey,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                user.email,
-                                style: const TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.phone,
-                                size: 16,
-                                color: Colors.grey,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                '0${user.phone}',
-                                style: const TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+      appBar: AppBar(title: const Text("Profil Saya")),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text("Nama: ${currentUser!.name}", style: const TextStyle(fontSize: 18)),
+          const SizedBox(height: 10),
+          Text("Email: ${currentUser!.email}", style: const TextStyle(fontSize: 18)),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  final updated = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => EditProfilePage(user: currentUser!),
                     ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          UserService.logout();
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomePage(),
-                            ),
-                            (route) => false,
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                        child: const Text('Logout'),
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                  if (updated == true) {
+                    // reload data
+                    currentUser = await auth.getLoggedInUser();
+                    setState(() {});
+                  }
+                },
+                child: const Text("Edit Profil"),
               ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: 2,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
-          }
-        },
+              const SizedBox(width: 12),
+              ElevatedButton(
+                onPressed: deleteAccount,
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text("Hapus Akun"),
+              ),
+            ],
+          )
+        ]),
       ),
     );
   }

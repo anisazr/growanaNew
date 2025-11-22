@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:growana/screens/login_page.dart';
+import 'package:provider/provider.dart';
 import 'screens/home_page.dart';
+import 'theme/theme_provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -11,19 +18,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
-      title: 'Growana Shopping List',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: const Color(0xFF1D7140),
-        scaffoldBackgroundColor: Colors.white,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1D7140),
-          primary: const Color(0xFF1D7140),
-        ),
-      ),
-      home: const HomePage(),
-      routes: {'/login': (context) => const LoginPage()},
+      title: 'CRUD User Flutter',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      home: const HomePage(), // HomePage tampil dulu
     );
   }
 }
