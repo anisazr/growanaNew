@@ -6,6 +6,8 @@ import 'login_page.dart';
 import '../services/user_service.dart';
 import '../widgets/bottom_navbar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:growana/services/prefs_service.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,6 +18,21 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLastTabIndex();   // <-- ini dipanggil saat HomePage dibuka
+  }
+
+  Future<void> _loadLastTabIndex() async {
+    final idx = await PrefsService.getLastTabIndex();
+    if (idx != null) {
+      setState(() {
+        _currentIndex = idx;
+      });
+    }
+  }
   int _carouselIndex = 0;
 
   final user = UserService.currentUser;
@@ -34,6 +51,8 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _currentIndex = index;
     });
+
+    PrefsService.saveLastTabIndex(index);
 
     if (index == 1) {
       Navigator.push(

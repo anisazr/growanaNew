@@ -4,6 +4,8 @@ import 'package:growana/utils/validators.dart';
 import 'home_page.dart';
 import 'register_page.dart';
 import '../services/user_service.dart';
+import 'package:growana/services/prefs_service.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -48,6 +50,19 @@ class _LoginPageState extends State<LoginPage> {
     _email.dispose();
     _password.dispose();
     super.dispose();
+  }
+
+    @override
+  void initState() {
+    super.initState();
+    _loadLastEmail();
+  }
+
+  Future<void> _loadLastEmail() async {
+    final last = await PrefsService.getLastEmail();
+    if (last != null && last.isNotEmpty) {
+      _email.text = last;
+    }
   }
 
  @override
