@@ -1,41 +1,66 @@
-import 'package:growana/models/user.dart';
-import 'package:growana/repositories/user_repository.dart';
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:growana/models/user.dart';
 
 class AuthService {
-  final repo = UserRepository();
 
+  /// REGISTER
   Future<String?> register(String name, String email, String password) async {
-    final existing = await repo.getUserByEmail(email);
-    if (existing != null) return "Email sudah terdaftar";
-
-    final user = User(name: name, email: email, password: password);
-    await repo.createUser(user);
-    return null;
-  }
-
-  Future<User?> login(String email, String password) async {
-    final user = await repo.getUserByEmail(email);
-
-    if (user == null) return null;
-    if (user.password != password) return null;
-
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt("currentUserId", user.id!);
 
-    return user;
+    // ambil user lama
+    final usersString = prefs.getString('users');
+    List users = usersString == null ? [] : jsonDecode(usersString);
+
+    // cek email
+    final exists = users.any((u) => u['email'] == email);
+    if (exists) return 'Email sudah terdaftar';
+
+    // tambah user baru
+    users.add({
+      'id': DateTime.now().millisecondsSinceEpoch,
+      'name': name,
+      'email': email,
+      'password': password,
+    });
+
+    await prefs.setString('users', jsonEncode(users));
+    return null; // sukses
   }
 
+  /// LOGIN
+  Future<User?> login(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    final usersString = prefs.getString('users');
+
+    if (usersString == null) return null;
+
+    final users = jsonDecode(usersString);
+
+    try {
+      final userMap = users.firstWhere(
+        (u) => u['email'] == email && u['password'] == password,
+      );
+
+      await prefs.setString('currentUser', jsonEncode(userMap));
+      return User.fromMap(userMap);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// GET USER LOGIN
   Future<User?> getLoggedInUser() async {
     final prefs = await SharedPreferences.getInstance();
-    final id = prefs.getInt("currentUserId");
-    if (id == null) return null;
+    final userString = prefs.getString('currentUser');
 
-    return await repo.getUserById(id);
+    if (userString == null) return null;
+    return User.fromMap(jsonDecode(userString));
   }
 
+  /// LOGOUT
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove("currentUserId");
+    await prefs.remove('currentUser');
   }
 }

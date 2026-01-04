@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:growana/models/user.dart';
-import 'package:growana/repositories/user_repository.dart';
 import 'package:growana/services/auth_service.dart';
 import 'package:growana/utils/validators.dart';
 import 'package:growana/services/user_service.dart';
@@ -14,7 +13,6 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  final repo = UserRepository();
   final auth = AuthService();
 
   final _formKey = GlobalKey<FormState>();
@@ -42,7 +40,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       password: passwordController.text,
     );
 
-    await repo.updateUser(updatedUser);
 
     // refresh currentUser so UI shows latest name/email
     await UserService.refreshCurrentUser();

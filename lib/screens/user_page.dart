@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:growana/models/user.dart';
 import 'package:growana/screens/edit_profile_page.dart';
 import 'package:growana/services/auth_service.dart';
-import 'package:growana/repositories/user_repository.dart';
 import 'login_page.dart';
 import '../services/user_service.dart';
 
@@ -61,7 +60,6 @@ class _UserPageState extends State<UserPage> {
     );
 
     if (confirm == true) {
-      await UserRepository().deleteUser(currentUser!.id!);
       await auth.logout();
       await UserService.refreshCurrentUser();
 

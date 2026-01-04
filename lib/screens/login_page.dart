@@ -35,6 +35,18 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+        // ✅ SIMPAN EMAIL
+    await PrefsService.setLastEmail(_email.text.trim());
+
+    // refresh UserService
+    await UserService.refreshCurrentUser();
+
+    // pindah ke Home
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomePage()),
+    );
+
     // refresh UserService supaya HomePage / AppBar bisa menampilkan user
     await UserService.refreshCurrentUser();
 

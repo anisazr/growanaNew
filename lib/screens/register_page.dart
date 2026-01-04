@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:growana/services/auth_service.dart';
 import 'package:growana/utils/validators.dart';
 import 'login_page.dart';
+import 'package:growana/services/prefs_service.dart';
+
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -35,6 +37,9 @@ class _RegisterPageState extends State<RegisterPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Registrasi berhasil, silakan login")),
     );
+
+    // simpan email terakhir
+    await PrefsService.setLastEmail(_email.text.trim());
 
     Navigator.pushReplacement(
       context,
