@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+
 import 'package:growana/screens/awards_page.dart';
+import 'package:growana/screens/maps_page.dart';
 import 'package:growana/widgets/location_select.dart';
-import '../services/user_service.dart';
+import 'package:growana/services/user_service.dart';
 import '../theme/theme_provider.dart';
 
 class GrowanaAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -15,6 +17,7 @@ class GrowanaAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onBackTap;
   final VoidCallback? onNotificationTap;
   final VoidCallback? onLeaderboardTap;
+  final VoidCallback? onMapTap;
 
   const GrowanaAppBar({
     Key? key,
@@ -25,6 +28,7 @@ class GrowanaAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onBackTap,
     this.onNotificationTap,
     this.onLeaderboardTap,
+    this.onMapTap,
   }) : super(key: key);
 
   @override
@@ -39,6 +43,7 @@ class GrowanaAppBar extends StatelessWidget implements PreferredSizeWidget {
               onPressed: onBackTap ?? () => Navigator.pop(context),
             )
           : null,
+
       title: Row(
         children: [
           SvgPicture.asset(
@@ -47,7 +52,7 @@ class GrowanaAppBar extends StatelessWidget implements PreferredSizeWidget {
             color: Colors.white,
           ),
 
-          // SHOW USER NAME
+          // USER NAME
           if (showUser && user != null)
             Expanded(
               child: Padding(
@@ -65,7 +70,7 @@ class GrowanaAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
 
-          // LOCATION DROPDOWN
+          // LOCATION SELECT (MANUAL FILTER)
           if (showLocation)
             Padding(
               padding: const EdgeInsets.all(12),
@@ -76,9 +81,9 @@ class GrowanaAppBar extends StatelessWidget implements PreferredSizeWidget {
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: LocationSelect(
-                  locations: ['Jakarta', 'Bandung', 'Surabaya'],
+                  locations: const ['Jakarta', 'Bandung', 'Surabaya'],
                   onChanged: (value) {
-                    print('Lokasi dipilih: $value');
+                    debugPrint('Lokasi dipilih: $value');
                   },
                 ),
               ),
@@ -92,13 +97,16 @@ class GrowanaAppBar extends StatelessWidget implements PreferredSizeWidget {
           gradient: LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
-            colors: [Color(0xFF1D7140), Color(0xFF2A9D5F)],
+            colors: [
+              Color(0xFF1D7140),
+              Color(0xFF2A9D5F),
+            ],
           ),
         ),
       ),
 
       actions: [
-        // THEME MODE SWITCH BUTTON
+        // THEME SWITCH
         InkWell(
           onTap: () {
             themeProvider.toggleTheme();
@@ -109,6 +117,25 @@ class GrowanaAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
 
+        // MAPS BUTTON (LBS + MAPS API)
+        if (showActions)
+          InkWell(
+            onTap: onMapTap ??
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MapsPage(),
+                    ),
+                  );
+                },
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Icon(Icons.map, color: Colors.white),
+            ),
+          ),
+
+        // NOTIFICATION
         if (showActions)
           InkWell(
             onTap: onNotificationTap ?? () {},
@@ -118,13 +145,16 @@ class GrowanaAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
 
+        // LEADERBOARD / AWARDS
         if (showActions)
           InkWell(
             onTap: onLeaderboardTap ??
                 () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AwardsPage()),
+                    MaterialPageRoute(
+                      builder: (_) => const AwardsPage(),
+                    ),
                   );
                 },
             child: const Padding(
