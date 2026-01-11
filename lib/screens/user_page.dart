@@ -26,18 +26,15 @@ class _UserPageState extends State<UserPage> {
   Future<void> _checkUser() async {
     currentUser = await auth.getLoggedInUser();
     if (currentUser == null) {
-      // redirect ke LoginPage (Opsi 2)
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginPage()),
       );
       return;
     }
-    // update also compatibility service
+
     await UserService.refreshCurrentUser();
-    setState(() {
-      checking = false;
-    });
+    setState(() => checking = false);
   }
 
   Future<void> deleteAccount() async {
@@ -53,7 +50,10 @@ class _UserPageState extends State<UserPage> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text("Hapus", style: TextStyle(color: Colors.red)),
+            child: const Text(
+              "Hapus",
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),
@@ -62,53 +62,143 @@ class _UserPageState extends State<UserPage> {
     if (confirm == true) {
       await auth.logout();
       await UserService.refreshCurrentUser();
-
       Navigator.pushNamedAndRemoveUntil(context, "/login", (_) => false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    const primary = Color(0xFF1D7140);
+
     if (checking) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Profil Saya")),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text("Nama: ${currentUser!.name}", style: const TextStyle(fontSize: 18)),
-          const SizedBox(height: 10),
-          Text("Email: ${currentUser!.email}", style: const TextStyle(fontSize: 18)),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: () async {
-                  final updated = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => EditProfilePage(user: currentUser!),
-                    ),
-                  );
-                  if (updated == true) {
-                    // reload data
-                    currentUser = await auth.getLoggedInUser();
-                    setState(() {});
-                  }
-                },
-                child: const Text("Edit Profil"),
-              ),
-              const SizedBox(width: 12),
-              ElevatedButton(
-                onPressed: deleteAccount,
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                child: const Text("Hapus Akun"),
-              ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF1D7140),
+              Colors.white,
             ],
-          )
-        ]),
+          ),
+        ),
+        child: Center(
+          child: Container(
+            width: 380,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.95),
+              borderRadius: BorderRadius.circular(22),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 16,
+                  offset: Offset(0, 8),
+                )
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // AVATAR
+                CircleAvatar(
+                  radius: 44,
+                  backgroundColor: primary,
+                  child: Text(
+                    currentUser!.name[0].toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 32,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // NAMA
+                Text(
+                  currentUser!.name,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 6),
+
+                // EMAIL
+                Text(
+                  currentUser!.email,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+                const Divider(),
+                const SizedBox(height: 24),
+
+                // EDIT PROFIL
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.edit),
+                    label: const Text("Edit Profil"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    onPressed: () async {
+                      final updated = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => EditProfilePage(user: currentUser!),
+                        ),
+                      );
+
+                      if (updated == true) {
+                        currentUser = await auth.getLoggedInUser();
+                        setState(() {});
+                      }
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 14),
+
+                // HAPUS AKUN
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.delete),
+                    label: const Text("Hapus Akun"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    onPressed: deleteAccount,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
