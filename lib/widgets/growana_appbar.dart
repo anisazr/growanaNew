@@ -1,137 +1,118 @@
+// lib/widgets/growana_appbar.dart - UPDATE dengan Location
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:growana/screens/awards_page.dart';
-import 'package:growana/widgets/location_select.dart';
-import '../services/user_service.dart';
+import '../services/auth_service.dart';
 import '../theme/theme_provider.dart';
+import 'location_header.dart'; // IMPORT BARU
 
 class GrowanaAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final bool showActions;
-  final bool showBack;
-  final bool showUser;
-  final bool showLocation;
-
-  final VoidCallback? onBackTap;
-  final VoidCallback? onNotificationTap;
-  final VoidCallback? onLeaderboardTap;
+  final String? title;
+  final bool showBackButton;
+  final bool showUserInfo;
+  final bool showThemeToggle;
+  final bool showLocation; // TAMBAH INI
+  final List<Widget>? actions;
+  final VoidCallback? onBackPressed;
 
   const GrowanaAppBar({
-    Key? key,
-    this.showActions = true,
-    this.showBack = false,
-    this.showUser = false,
-    this.showLocation = false,
-    this.onBackTap,
-    this.onNotificationTap,
-    this.onLeaderboardTap,
-  }) : super(key: key);
+    super.key,
+    this.title,
+    this.showBackButton = false,
+    this.showUserInfo = false,
+    this.showThemeToggle = true,
+    this.showLocation = false, // TAMBAH INI
+    this.actions,
+    this.onBackPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final user = UserService.currentUser;
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final authService = AuthService();
 
     return AppBar(
-      leading: showBack
+      leading: showBackButton
           ? IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: onBackTap ?? () => Navigator.pop(context),
+              icon: const Icon(Icons.arrow_back),
+              onPressed: onBackPressed ?? () => Navigator.pop(context),
+              color: Colors.white,
             )
           : null,
       title: Row(
         children: [
+          // Logo
           SvgPicture.asset(
-            'assets/icons/icon.svg',
-            height: 28,
+            'assets/images/logo.svg',
+            height: 32,
             color: Colors.white,
           ),
-
-          // SHOW USER NAME
-          if (showUser && user != null)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Text(
-                  user.name,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+          if (title != null) ...[
+            const SizedBox(width: 12),
+            Text(
+              title!,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
             ),
-
-          // LOCATION DROPDOWN
-          if (showLocation)
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white24,
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: LocationSelect(
-                  locations: ['Jakarta', 'Bandung', 'Surabaya'],
-                  onChanged: (value) {
-                    print('Lokasi dipilih: $value');
-                  },
-                ),
+          ],
+          if (showUserInfo) ...[
+            const SizedBox(width: 12),
+            FutureBuilder(
+              future: authService.getCurrentUser(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator(color: Colors.white);
+                }
+                if (snapshot.hasData && snapshot.data != null) {
+                  final user = snapshot.data!;
+                  return Text(
+                    'Halo, ${user.name.split(' ').first}',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white70,
+                    ),
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
+          ],
+          if (showLocation) ...[
+            const SizedBox(width: 12),
+            const LocationHeader(
+              showIcon: true,
+              textStyle: TextStyle(
+                fontSize: 12,
+                color: Colors.white70,
               ),
             ),
+          ],
         ],
       ),
-
-      // GRADIENT BACKGROUND
-      flexibleSpace: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [Color(0xFF1D7140), Color(0xFF2A9D5F)],
-          ),
+      backgroundColor: const Color(0xFF1D7140),
+      elevation: 0,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(15),
         ),
       ),
-
       actions: [
-        // THEME MODE SWITCH BUTTON
-        InkWell(
-          onTap: () {
-            themeProvider.toggleTheme();
-          },
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Icon(Icons.brightness_6, color: Colors.white, size: 26),
-          ),
-        ),
-
-        if (showActions)
-          InkWell(
-            onTap: onNotificationTap ?? () {},
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Icon(Icons.notifications, color: Colors.white),
+        // Theme Toggle
+        if (showThemeToggle)
+          IconButton(
+            icon: Icon(
+              themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+              color: Colors.white,
             ),
+            onPressed: () {
+              themeProvider.toggleTheme();
+            },
           ),
-
-        if (showActions)
-          InkWell(
-            onTap: onLeaderboardTap ??
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AwardsPage()),
-                  );
-                },
-            child: const Padding(
-              padding: EdgeInsets.only(right: 16),
-              child: Icon(Icons.leaderboard, color: Colors.white),
-            ),
-          ),
+        // Custom Actions
+        ...?actions,
       ],
     );
   }

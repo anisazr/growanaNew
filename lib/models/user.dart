@@ -1,11 +1,12 @@
-class User{
-  final int? id;
+// lib/models/user.dart
+class User {
+  final int id;
   final String name;
   final String email;
   final String password;
 
   User({
-    this.id,
+    required this.id,
     required this.name,
     required this.email,
     required this.password,
@@ -13,19 +14,33 @@ class User{
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['id'],
-      name: map['name'],
-      email: map['email'],
-      password: map['password'],
+      id: map['id'] ?? 0,
+      name: map['name'] ?? '',
+      email: map['email'] ?? '',
+      password: map['password'] ?? '',
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "id": id,
-      "name": name,
-      "email": email,
-      "password": password,
+      'id': id,
+      'name': name,
+      'email': email,
+      'password': password,
     };
+  }
+
+  User copyWith({
+    int? id,
+    String? name,
+    String? email,
+    String? password,
+  }) {
+    return User(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      password: password ?? this.password,
+    );
   }
 }

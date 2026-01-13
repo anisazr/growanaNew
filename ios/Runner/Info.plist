@@ -2,6 +2,23 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	 <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Aplikasi membutuhkan akses lokasi untuk menampilkan pameran terdekat dan navigasi</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Aplikasi membutuhkan akses lokasi untuk menampilkan pameran terdekat dan navigasi</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Aplikasi membutuhkan akses lokasi untuk menampilkan pameran terdekat dan navigasi</string>
+    
+    <!-- For URL launching -->
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>https</string>
+        <string>http</string>
+        <string>comgooglemaps</string>
+        <string>maps</string>
+    </array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Butuh lokasi untuk menampilkan informasi terdekat</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
