@@ -7,6 +7,11 @@ import 'home_page.dart';
 import 'register_page.dart';
 import '../theme/theme_provider.dart';
 
+const Color primaryGreen = Color(0xFF1F7A4D);
+const Color darkText = Color(0xFF1E1E1E);
+const Color lightText = Colors.white;
+const Color secondaryText = Color(0xFF4F4F4F);
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -70,9 +75,10 @@ class _LoginPageState extends State<LoginPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: isDarkMode
-                ? [Colors.grey[900]!, Colors.grey[800]!]
-                : [const Color(0xFF1D7140), Colors.white],
+            colors:
+                isDarkMode
+                    ? [Colors.grey[900]!, Colors.grey[800]!]
+                    : [const Color(0xFF1D7140), Colors.white],
           ),
         ),
         child: Center(
@@ -89,7 +95,10 @@ class _LoginPageState extends State<LoginPage> {
                       Icon(
                         Icons.eco,
                         size: 70,
-                        color: isDarkMode ? Colors.white : const Color(0xFF1D7140),
+                        color:
+                            isDarkMode
+                                ? Colors.white
+                                : const Color.fromARGB(255, 0, 65, 39),
                       ),
                       const SizedBox(height: 10),
                       Text(
@@ -97,14 +106,20 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: isDarkMode ? Colors.white : const Color(0xFF1D7140),
+                          color:
+                              isDarkMode
+                                  ? Colors.white
+                                  : const Color.fromARGB(255, 0, 65, 39),
                         ),
                       ),
                       Text(
                         'Urban Farming Community',
                         style: TextStyle(
                           fontSize: 14,
-                          color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
+                          color:
+                              isDarkMode
+                                  ? Colors.grey[300]
+                                  : const Color.fromARGB(255, 0, 65, 39),
                         ),
                       ),
                     ],
@@ -126,9 +141,9 @@ class _LoginPageState extends State<LoginPage> {
                           Text(
                             'Masuk ke Akun',
                             style: TextStyle(
-                              fontSize: 22,
+                              fontSize: 26,
                               fontWeight: FontWeight.bold,
-                              color: isDarkMode ? Colors.white : Colors.black,
+                              color: darkText,
                             ),
                           ),
                           const SizedBox(height: 24),
@@ -137,10 +152,16 @@ class _LoginPageState extends State<LoginPage> {
                           TextFormField(
                             controller: _emailController,
                             decoration: InputDecoration(
-                              labelText: 'Email',
-                              prefixIcon: const Icon(Icons.email),
+                              hintText: 'Email',
+                              hintStyle: TextStyle(color: Colors.grey[600]),
+                              prefixIcon: Icon(
+                                Icons.email,
+                                color: primaryGreen,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
                             validator: Validators.validateEmail,
@@ -152,10 +173,13 @@ class _LoginPageState extends State<LoginPage> {
                           TextFormField(
                             controller: _passwordController,
                             decoration: InputDecoration(
-                              labelText: 'Password',
-                              prefixIcon: const Icon(Icons.lock),
+                              hintText: 'Password',
+                              hintStyle: TextStyle(color: Colors.grey[600]),
+                              prefixIcon: Icon(Icons.lock, color: primaryGreen),
+                              filled: true,
+                              fillColor: Colors.white,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
                             obscureText: true,
@@ -168,16 +192,20 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               Checkbox(
                                 value: _rememberMe,
+                                activeColor: primaryGreen,
                                 onChanged: (value) {
                                   setState(() {
-                                    _rememberMe = value ?? false;
+                                    _rememberMe = value!;
                                   });
                                 },
                               ),
                               Text(
                                 'Ingat saya',
                                 style: TextStyle(
-                                  color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
+                                  color:
+                                      isDarkMode
+                                          ? Colors.grey[300]
+                                          : Colors.grey[700],
                                 ),
                               ),
                             ],
@@ -193,25 +221,29 @@ class _LoginPageState extends State<LoginPage> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF1D7140),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(
+                                    12,
+                                  ), // boleh diperbesar
                                 ),
                               ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
+                              child:
+                                  _isLoading
+                                      ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                      : const Text(
+                                        'MASUK',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    )
-                                  : const Text(
-                                      'MASUK',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
                             ),
                           ),
                         ],
@@ -227,25 +259,23 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Belum punya akun? ',
-                      style: TextStyle(
-                        color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
-                      ),
+                      'Belum punya akun?',
+                      style: TextStyle(color: Colors.grey[700]),
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const RegisterPage(),
+                            builder: (context) => const RegisterPage(),
                           ),
                         );
                       },
                       child: const Text(
                         'Daftar disini',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
                           color: Color(0xFF1D7140),
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),

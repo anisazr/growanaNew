@@ -48,48 +48,58 @@ class _HomePageState extends State<HomePage> {
         children: [
           // Welcome Section
           Container(
-            color: const Color(0xFF1D7140),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: FutureBuilder(
-                future: _authService.getCurrentUser(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  
-                  final user = snapshot.data;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Selamat datang,',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white.withOpacity(0.8),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        user?.name ?? 'Pengguna',
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Ayo mulai perjalanan urban farming mu!',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white.withOpacity(0.8),
-                        ),
-                      ),
-                    ],
-                  );
-                },
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: Color(0xFF1D7140),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(24),
+                bottomRight: Radius.circular(24),
               ),
+            ),
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
+            child: FutureBuilder(
+              future: _authService.getCurrentUser(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox(
+                    height: 80,
+                    child: Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    ),
+                  );
+                }
+
+                final user = snapshot.data;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Selamat datang,',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white.withOpacity(0.85),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      user?.name ?? 'Pengguna',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Ayo mulai perjalanan urban farming mu!',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
 
@@ -138,21 +148,11 @@ class _HomePageState extends State<HomePage> {
                         ),
                         _buildStatCard(
                           title: 'Pameran',
-                          value: exhibitionService.allExhibitions.length.toString(),
+                          value:
+                              exhibitionService.allExhibitions.length
+                                  .toString(),
                           icon: Icons.event,
                           color: Colors.green,
-                        ),
-                        _buildStatCard(
-                          title: 'Berlangsung',
-                          value: exhibitionService.ongoingExhibitions.length.toString(),
-                          icon: Icons.play_circle,
-                          color: Colors.orange,
-                        ),
-                        _buildStatCard(
-                          title: 'Mendatang',
-                          value: exhibitionService.upcomingExhibitions.length.toString(),
-                          icon: Icons.schedule,
-                          color: Colors.purple,
                         ),
                       ],
                     ),
@@ -177,27 +177,6 @@ class _HomePageState extends State<HomePage> {
                       childAspectRatio: 1.5,
                       children: [
                         _buildQuickAction(
-                          icon: Icons.calendar_today,
-                          label: 'Jadwal',
-                          color: Colors.blue,
-                          onTap: () {
-                            // TODO: Navigate to calendar view
-                          },
-                        ),
-                        _buildQuickAction(
-                          icon: Icons.map,
-                          label: 'Peta Pameran',
-                          color: Colors.green,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const MapsPage(),
-                              ),
-                            );
-                          },
-                        ),
-                        _buildQuickAction(
                           icon: Icons.add_task,
                           label: 'Todo List',
                           color: Colors.orange,
@@ -215,36 +194,47 @@ class _HomePageState extends State<HomePage> {
                           onTap: () async {
                             try {
                               // Show current location - panggil static method
-                              final position = await LocationService.getCurrentLocation();
-                              final address = await LocationService.getAddressFromCoordinates(
-                                position.latitude,
-                                position.longitude,
-                              );
-                              
+                              final position =
+                                  await LocationService.getCurrentLocation();
+                              final address =
+                                  await LocationService.getAddressFromCoordinates(
+                                    position.latitude,
+                                    position.longitude,
+                                  );
+
                               if (!mounted) return;
-                              
+
                               showDialog(
                                 context: context,
-                                builder: (context) => AlertDialog(
-                                  title: const Text('Lokasi Anda'),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Alamat: $address'),
-                                      const SizedBox(height: 8),
-                                      Text('Latitude: ${position.latitude.toStringAsFixed(6)}'),
-                                      Text('Longitude: ${position.longitude.toStringAsFixed(6)}'),
-                                      Text('Akurasi: ${position.accuracy.toStringAsFixed(2)}m'),
-                                    ],
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: const Text('Tutup'),
+                                builder:
+                                    (context) => AlertDialog(
+                                      title: const Text('Lokasi Anda'),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Alamat: $address'),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            'Latitude: ${position.latitude.toStringAsFixed(6)}',
+                                          ),
+                                          Text(
+                                            'Longitude: ${position.longitude.toStringAsFixed(6)}',
+                                          ),
+                                          Text(
+                                            'Akurasi: ${position.accuracy.toStringAsFixed(2)}m',
+                                          ),
+                                        ],
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed:
+                                              () => Navigator.pop(context),
+                                          child: const Text('Tutup'),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
                               );
                             } catch (e) {
                               if (!mounted) return;
@@ -265,46 +255,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          // All Exhibitions
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Semua Pameran',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                TextButton.icon(
-                  icon: const Icon(Icons.map),
-                  label: const Text('Lihat di Peta'),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const MapsPage(),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Consumer<ExhibitionService>(
-            builder: (context, exhibitionService, child) {
-              return ExhibitionSlider(
-                showFeaturedOnly: false,
-                autoPlay: false,
-                height: 240,
-                viewportFraction: 0.9,
-              );
-            },
-          ),
           const SizedBox(height: 24),
         ],
       ),
@@ -317,10 +267,7 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         children: [
           Expanded(
-            child: TodoListWidget(
-              categoryFilter: null,
-              showCompleted: false,
-            ),
+            child: TodoListWidget(categoryFilter: null, showCompleted: false),
           ),
         ],
       ),
@@ -335,9 +282,7 @@ class _HomePageState extends State<HomePage> {
   }) {
     return Card(
       elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -367,10 +312,7 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 8),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             ),
           ],
         ),
@@ -386,9 +328,7 @@ class _HomePageState extends State<HomePage> {
   }) {
     return Card(
       elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
@@ -433,13 +373,9 @@ class _HomePageState extends State<HomePage> {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
-      backgroundColor: themeProvider.isDarkMode 
-          ? Colors.grey[900] 
-          : Colors.grey[50],
-      appBar: GrowanaAppBar(
-        showUserInfo: false,
-        showThemeToggle: true,
-      ),
+      backgroundColor:
+          themeProvider.isDarkMode ? Colors.grey[900] : Colors.grey[50],
+      appBar: GrowanaAppBar(showUserInfo: false, showThemeToggle: true),
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
@@ -447,11 +383,7 @@ class _HomePageState extends State<HomePage> {
             _currentIndex = index;
           });
         },
-        children: [
-          _buildHomeContent(),
-          _buildTodoContent(),
-          const UserPage(),
-        ],
+        children: [_buildHomeContent(), _buildTodoContent(), const UserPage()],
       ),
       bottomNavigationBar: BottomNavBar(
         currentIndex: _currentIndex,

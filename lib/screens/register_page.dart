@@ -59,10 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (error != null) {
       // Show error
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(error), backgroundColor: Colors.red),
       );
     } else {
       // Show success and navigate to login
@@ -72,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
           backgroundColor: Colors.green,
         ),
       );
-      
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginPage()),
@@ -95,9 +92,10 @@ class _RegisterPageState extends State<RegisterPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: isDarkMode
-                ? [Colors.grey[900]!, Colors.grey[800]!]
-                : [Colors.white, const Color(0xFFE8F5E9)],
+            colors:
+                isDarkMode
+                    ? [Colors.grey[900]!, Colors.grey[800]!]
+                    : [Colors.white, const Color(0xFFE8F5E9)],
           ),
         ),
         child: Center(
@@ -121,9 +119,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           Text(
                             'Buat Akun Baru',
                             style: TextStyle(
-                              fontSize: 22,
+                              fontSize: 26,
                               fontWeight: FontWeight.bold,
-                              color: isDarkMode ? Colors.white : Colors.black,
+                              color: Colors.black87,
                             ),
                           ),
                           const SizedBox(height: 24),
@@ -132,13 +130,31 @@ class _RegisterPageState extends State<RegisterPage> {
                           TextFormField(
                             controller: _nameController,
                             decoration: InputDecoration(
-                              labelText: 'Nama Lengkap',
-                              prefixIcon: const Icon(Icons.person),
+                              hintText: 'Nama Lengkap',
+                              hintStyle: TextStyle(color: Colors.grey[600]),
+                              prefixIcon: Icon(
+                                Icons.person,
+                                color: Color(0xFF1D7140),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade300,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Color(0xFF1D7140),
+                                  width: 2,
+                                ),
                               ),
                             ),
-                            validator: Validators.validateName,
                           ),
                           const SizedBox(height: 16),
 
@@ -146,42 +162,71 @@ class _RegisterPageState extends State<RegisterPage> {
                           TextFormField(
                             controller: _emailController,
                             decoration: InputDecoration(
-                              labelText: 'Email',
-                              prefixIcon: const Icon(Icons.email),
+                              hintText: 'Email',
+                              hintStyle: TextStyle(color: Colors.grey[600]),
+                              prefixIcon: Icon(
+                                Icons.mail,
+                                color: Color(0xFF1D7140),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade300,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Color(0xFF1D7140),
+                                  width: 2,
+                                ),
                               ),
                             ),
-                            validator: Validators.validateEmail,
-                            keyboardType: TextInputType.emailAddress,
                           ),
                           const SizedBox(height: 16),
 
                           // Password Field
                           TextFormField(
                             controller: _passwordController,
+                            obscureText: true,
                             decoration: InputDecoration(
-                              labelText: 'Password',
-                              prefixIcon: const Icon(Icons.lock),
+                              hintText: 'Password',
+                              hintStyle: TextStyle(color: Colors.grey[600]),
+                              prefixIcon: const Icon(
+                                Icons.lock,
+                                color: Color(0xFF1D7140),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade300,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Color(0xFF1D7140),
+                                  width: 2,
+                                ),
                               ),
                             ),
-                            obscureText: true,
-                            validator: Validators.validatePassword,
                           ),
+
                           const SizedBox(height: 16),
 
                           // Confirm Password Field
                           TextFormField(
                             controller: _confirmPasswordController,
-                            decoration: InputDecoration(
-                              labelText: 'Konfirmasi Password',
-                              prefixIcon: const Icon(Icons.lock_outline),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
                             obscureText: true,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -189,7 +234,34 @@ class _RegisterPageState extends State<RegisterPage> {
                               }
                               return null;
                             },
+                            decoration: InputDecoration(
+                              hintText: 'Konfirmasi Password',
+                              hintStyle: TextStyle(color: Colors.grey[600]),
+                              prefixIcon: const Icon(
+                                Icons.lock_outline,
+                                color: Color(0xFF1D7140),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade300,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFF1D7140),
+                                  width: 2,
+                                ),
+                              ),
+                            ),
                           ),
+
                           const SizedBox(height: 24),
 
                           // Register Button
@@ -201,25 +273,27 @@ class _RegisterPageState extends State<RegisterPage> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF1D7140),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
+                              child:
+                                  _isLoading
+                                      ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                      : const Text(
+                                        'DAFTAR',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    )
-                                  : const Text(
-                                      'DAFTAR',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
                             ),
                           ),
                         ],
@@ -235,25 +309,18 @@ class _RegisterPageState extends State<RegisterPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Sudah punya akun? ',
-                      style: TextStyle(
-                        color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
-                      ),
+                      'Sudah punya akun?',
+                      style: TextStyle(color: Colors.grey[700]),
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const LoginPage(),
-                          ),
-                        );
+                        Navigator.pop(context);
                       },
                       child: const Text(
                         'Masuk disini',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
                           color: Color(0xFF1D7140),
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
