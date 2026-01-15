@@ -1,16 +1,30 @@
-# shopping_list
+# 🌱 Growana – Aplikasi Event Tanaman Hias Indonesia
 
-A new Flutter project.
+## Deskripsi
+**Growana** adalah aplikasi mobile berbasis **Flutter** yang menyediakan informasi mengenai **event tanaman hias di Indonesia**. Aplikasi ini dilengkapi dengan integrasi **API berbasis lokasi** untuk menampilkan titik pelaksanaan event secara akurat, termasuk informasi **jarak dan radius** dari lokasi pengguna.
 
-## Getting Started
+Aplikasi ini bertujuan untuk membantu pengguna menemukan event tanaman hias terdekat serta mendukung perkembangan komunitas dan ekosistem tanaman hias di Indonesia melalui teknologi digital.
 
-This project is a starting point for a Flutter application.
+## Fitur Utama
+- 📍 Menampilkan lokasi event tanaman hias dalam bentuk peta  
+- 📏 Menyediakan informasi jarak dan radius event dari posisi pengguna  
+- 🗓️ Daftar event tanaman hias yang sedang dan akan berlangsung  
+- ⚙️ Integrasi API lokasi untuk pengambilan dan visualisasi data geografis  
 
-A few resources to get you started if this is your first Flutter project:
+## Teknologi yang Digunakan
+- **Flutter** – Framework pengembangan aplikasi mobile  
+- **Dart** – Bahasa pemrograman utama  
+- **Location & Maps API** – Pengolahan data lokasi dan pemetaan  
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Tujuan Pengembangan
+- Mempermudah akses informasi event tanaman hias  
+- Mendukung digitalisasi event dan komunitas pertanian  
+- Menghubungkan masyarakat dengan event tanaman hias berbasis lokasi  
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Tim Pengembang
+- **Andi Nur Akifah** (2310120003)  
+- **Anisa** (2310120019)  
+- **Anita Zakiati** (2310120020)  
+
+## Status Proyek
+🚧 Dalam tahap pengembangan
